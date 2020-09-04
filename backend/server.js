@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const HttpError = require("./models/http-error");
 
 // Import routes
 const usersRoutes = require("./routes/users-routes");
@@ -14,13 +15,16 @@ app.use(express.json());
 app.use("/api/users", usersRoutes);
 app.use("/api/places", placesRoutes);
 
+app.use((req, res, next) => {
+  throw new HttpError("Could not find a route", 404);
+});
+
 app.use((error, req, res, next) => {
   if (res.headerSent) {
     return next(error);
   }
-
   res.status(error.code || 500);
-  res.json({message: error.message || 'Unknown error occured'});
+  res.json({ message: error.message || "Unknown error occurred" });
 });
 
 //Listen to port
