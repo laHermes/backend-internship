@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const HttpError = require("./models/http-error");
+const mongoose = require("mongoose");
 
 // Import routes
 const usersRoutes = require("./routes/users-routes");
@@ -27,7 +28,17 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "Unknown error occurred" });
 });
 
-//Listen to port
-app.listen(5000, () => {
-  console.log("listening to port");
-});
+mongoose
+  .connect(
+    "mongodb+srv://mean123:mean123@cluster0.lplof.gcp.mongodb.net/places_db?retryWrites=true&w=majority",
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
+
+  .then(() => {
+    //Listen to port
+    app.listen(5000, () => {
+      console.log("listening to port");
+    });
+  })
+  .catch((err) => console.log("err"));
+  mongoose.set('useCreateIndex', true);
